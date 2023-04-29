@@ -35,6 +35,12 @@
 			"source": "${env:HOME}${env:USERPROFILE}/.minikube",
 			"target": "/usr/local/share/minikube-localhost",
 			"type": "bind"
+		},
+		// Mount to sync SSH keys to .ssh folder
+		{
+			"source": "${env:HOME}${env:USERPROFILE}/.ssh",
+			"target": "/home/vscode/.ssh",
+			"type": "bind"
 		}
 	]
 
