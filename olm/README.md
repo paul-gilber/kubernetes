@@ -19,61 +19,58 @@ operator-sdk olm install
 # List operators available to install
 kubectl get packagemanifests -A
 
-# Install an tektoncd-operator operator for testing
-# Check supported installation modes.
-# Check whether own, single, multi, or all namespace installation mode is supported.
-kubectl get packagemanifest tektoncd-operator -o jsonpath="{.status.channels[0].currentCSVDesc.installModes}" | jq '.[] | select (.supported==true)'
+# Set operator details
+operator_name="tektoncd-operator"
+operator_package_ns="olm"
+
+# Check supported installation modes (own, single, multi or all namespaces).
+kubectl get packagemanifest -n $operator_package_ns $operator_name -o jsonpath="{.status.channels[0].currentCSVDesc.installModes}" | jq '.[] | select (.supported==true)'
 
 # Check operator catalog source
-kubectl get packagemanifest tektoncd-operator -o jsonpath="{.status.catalogSource}" ; echo
+kubectl get packagemanifest -n $operator_package_ns $operator_name -o jsonpath="{.status.catalogSource}" ; echo
 
 # Check catalog source namespace
-kubectl get packagemanifest tektoncd-operator -o jsonpath="{.status.catalogSourceNamespace}"; echo
+kubectl get packagemanifest -n $operator_package_ns $operator_name -o jsonpath="{.status.catalogSourceNamespace}"; echo
 
 # Check channels
-kubectl get packagemanifest tektoncd-operator -o jsonpath="{.status.channels[*].name}" ; echo
+kubectl get packagemanifest -n $operator_package_ns $operator_name -o jsonpath="{.status.channels[*].name}" ; echo
 
-# Check global operators namespace (operators)
-kubectl get og -A | grep -i global-operators 
+# Create Namespace and Operator Group (Optional, only for non-global operator installation)
+cat <<EOF > $operator_name.yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: foo
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: my-group
+  namespace: foo
+EOF
 
 # Create Subscription
-cat <<EOF > tektoncd-operator.yaml
+cat <<EOF > $operator_name.yaml
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
-  name: tektoncd-operator
-  namespace: operators
+  name: <name-of-your-subscription>/<name-of-your-operator>
+  namespace: <namespace-you-want-your-operator-installed-in>
 spec:
-  channel: alpha
-  name: tektoncd-operator
+  channel: <channel-you-want-to-subscribe-to>
+  name: <name-of-your-operator>
   source: <name-of-catalog-operator-is-part-of>
   sourceNamespace: <namespace-that-has-catalog>
   installPlanApproval: <Automatic/Manual>
 EOF
 
-cat <<EOF > tektoncd-operator.yaml
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  name: tektoncd-operator
-  namespace: operators
-spec:
-  channel: alpha
-  name: tektoncd-operator
-  source: operatorhubio-catalog
-  sourceNamespace: olm
-  installPlanApproval: Automatic
-EOF
-
-# Install tektoncd-operator
-kubectl apply -f tektoncd-operator.yaml
+# Install Operator
+kubectl apply -f $operator_name.yaml
 
 # Wait for completion 
-watch kubectl get pods -n operators -l app=tekton-operator
-
-# Create Operator Group (Optional based on installModes)
-
-
+watch kubectl get pods -n <namespace-you-want-your-operator-installed-in>
 ```
 
 ## CRDs
