@@ -69,7 +69,9 @@ kubectl apply -f $operator_name.yaml
 ```sh
 # https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-openshift-deploy-elasticsearch.html
 
-cat <<EOF > instance.yaml
+# https://www.elastic.co/guide/en/cloud-on-k8s/master/k8s-beat-configuration-examples.html#k8s_openshift_monitoring
+
+cat <<EOF > es-kibana.yaml
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
@@ -104,10 +106,15 @@ spec:
             cpu: 1
 EOF
 
-kubectl apply -f instance.yaml
+# Create metricbeat, filebeat, elasticsearch, kibana
+kubectl apply -f es-kibana.yaml
+kubectl apply -f filebeat-autodiscover.yaml
+kubectl apply -f metricbeat_hosts.yaml
 
 # Get Kibana Instance credentials, username: elastic
 kubectl get secret elasticsearch-sample-es-elastic-user -n elastic -o jsonpath='{.data.elastic}' | base64 -d ; echo
 ```
 
+## References
+- [Metric Beat Kubernetes Modules](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-module-kubernetes.html)
 
