@@ -1,0 +1,5 @@
+FROM mcr.microsoft.com/devcontainers/base:bullseye
+
+# Configure kubectl completion
+RUN /bin/bash kubectl completion `basename $SHELL` > "$HOME/.kube/completion" &&\
+    echo "source $HOME/.kube/completion" >> "$HOME/.profile"

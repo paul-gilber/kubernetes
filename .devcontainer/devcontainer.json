@@ -4,7 +4,9 @@
 	"name": "Kubernetes - Local Configuration",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
-
+	// "build": {
+	// 	"dockerfile": "Containerfile"
+	// },
 	"features": {
 		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
 			"enableNonRootDocker": "true",
@@ -16,7 +18,10 @@
 			"minikube": "none"
 		},
 		"./local-features/copy-kube-config": {},
-		"ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {}
+		"ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
+		"ghcr.io/devcontainers-contrib/features/homebrew-package:1": {
+			"package": "operator-sdk"
+		}
 	},
 
 	"remoteEnv": {
@@ -48,7 +53,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "kubectl version",
+	// "postCreateCommand": "ohup bash -c 'your-command-here &'"
 
 	// Configure tool-specific properties.
 	// "customizations": {},

@@ -47,3 +47,30 @@ spec:
 EOF
 
 ```
+
+## CRDs
+ClusterServiceVersion (csv)
+- version of a running operator
+- metadata included: name, description, version, repo link, labels, icon, owned/required CRDs, cluster requiremetns, and install strategies
+- similar to packaging tools, rpm, deb, apk
+
+CatalogSource (catsrc)
+- store of metadata OLM can query to discover and install operators and dependencies
+- source types: grpc with image (most common), grpc with address, internal or configmap
+
+OperatorCondition (condition)
+- communication between OLM and managed operators
+
+Subscription (sub)
+- intent to install an operator
+- describe which channel of operator package to subscribe
+- describe whether to perform updates automatically or manually
+
+InstallPlan (ip)
+
+OperatorGroup (og)
+
+## How to know when an update is available
+Check subscription 
+- currentCSV = latest available version to OLM
+- installedCSV = version installed on cluster
