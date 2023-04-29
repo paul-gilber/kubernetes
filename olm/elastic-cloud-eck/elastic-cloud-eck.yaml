@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: elastic
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: elastic
+  namespace: elastic
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: elastic-cloud-eck
+  namespace: elastic
+spec:
+  channel: stable
+  name: elastic-cloud-eck
+  source: operatorhubio-catalog
+  sourceNamespace: olm
+  installPlanApproval: Automatic

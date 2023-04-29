@@ -53,6 +53,7 @@ EOF
 
 # Create Subscription
 cat <<EOF > $operator_name.yaml
+---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
