@@ -65,12 +65,12 @@ EOF
 kubectl apply -f $operator_name.yaml
 ```
 
-## Elasticsearch instance with a route
+## Elasticsearch and Kibana Instance
 ```sh
 # https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-openshift-deploy-elasticsearch.html
 
-cat <<EOF > elasticsearch.yaml
-# This sample sets up an Elasticsearch cluster with an OpenShift route
+cat <<EOF > instance.yaml
+---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
@@ -83,7 +83,31 @@ spec:
     count: 1
     config:
       node.store.allow_mmap: false
+---
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana-sample
+  namespace: elastic
+spec:
+  version: 8.7.0
+  count: 1
+  elasticsearchRef:
+    name: elasticsearch-sample
+  podTemplate:
+    spec:
+      containers:
+      - name: kibana
+        resources:
+          limits:
+            memory: 1Gi
+            cpu: 1
 EOF
 
-kubectl apply -f elasticsearch.yaml
+kubectl apply -f instance.yaml
+
+# Get Kibana Instance credentials, username: elastic
+kubectl get secret elasticsearch-sample-es-elastic-user -n elastic -o jsonpath='{.data.elastic}' | base64 -d ; echo
 ```
+
+
