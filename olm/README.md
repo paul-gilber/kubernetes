@@ -67,8 +67,20 @@ Subscription (sub)
 - describe whether to perform updates automatically or manually
 
 InstallPlan (ip)
+- defines set  of resources to be created to install or upgrade operator
 
 OperatorGroup (og)
+- multitenant configuration to OLM installed operators
+- membership
+  csv-a is a member of op-a in namespace ns-a if:
+  * op-a is the only operator group in ns-a
+  * csv-a's install mode support op-a's target namespace set
+- namespace selection may be via
+  * `selector` namespace label selector
+  * `targetNamespaces` namespace list
+- global operator group
+  * has no `spec.selector` and `spec.targetNamespaces`
+- check csv annotations for operatorgroup membership
 
 ## How to know when an update is available
 Check subscription 
